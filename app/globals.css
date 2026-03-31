@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+/* ===== Design Tokens ===== */
+:root {
+  --navy: #080d1a;
+  --navy2: #0d1526;
+  --navy3: #111e35;
+  --accent: #4f8ef7;
+  --accent2: #7c5cfc;
+  --text: #e8eaf0;
+  --text2: #8b95b0;
+  --text3: #4a5570;
+  --border: rgba(79, 142, 247, 0.15);
+}
+
+/* ===== Base Styles ===== */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--navy);
+  color: var(--text);
+  font-family: var(--font-sans), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: var(--accent);
+  color: var(--navy);
+}
+
+/* ===== Utility Classes ===== */
+.font-mono {
+  font-family: var(--font-mono), monospace;
+}
