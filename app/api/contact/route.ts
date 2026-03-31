@@ -67,7 +67,7 @@ export async function POST(request: Request) {
 
   try {
     await resend.emails.send({
-      from: "onboarding@resend.dev",
+      from: "EijiCode <info@eijicode.com>",
       to: toEmail,
       subject: `【EijiCode】お問い合わせ: ${name}様`,
       text: emailBody,
