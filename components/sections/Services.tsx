@@ -202,7 +202,7 @@ export default function Services() {
               lineHeight: 1.7,
             }}
           >
-            テクノロジーを活用し、貴社の課題を解決いたいます。
+            テクノロジーを活用し、貴社の課題を解決いたします。
           </p>
         </motion.div>
 

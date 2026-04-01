@@ -168,29 +168,21 @@ export default function Header() {
 
   return (
     <div className="card-nav-container">
+      <GlassSurface
+        width="100%"
+        height="auto"
+        borderRadius={12}
+        brightness={30}
+        opacity={0.85}
+        blur={14}
+        backgroundOpacity={0.3}
+        saturation={1.2}
+        distortionScale={-120}
+      >
       <nav
         ref={navRef}
         className={`card-nav ${isExpanded ? "open" : ""}`}
       >
-        <GlassSurface
-          width="100%"
-          height="100%"
-          borderRadius={12}
-          brightness={30}
-          opacity={0.85}
-          blur={14}
-          backgroundOpacity={0.4}
-          saturation={1.2}
-          distortionScale={-120}
-          style={{
-            position: "absolute",
-            inset: 0,
-            zIndex: 0,
-            pointerEvents: "none",
-          }}
-        >
-          <div />
-        </GlassSurface>
         <div className="card-nav-top">
           <div
             className={`hamburger-menu ${isHamburgerOpen ? "open" : ""}`}
@@ -230,6 +222,7 @@ export default function Header() {
           ))}
         </div>
       </nav>
+      </GlassSurface>
 
       <style>{`
         .card-nav-container {
@@ -246,10 +239,9 @@ export default function Header() {
           display: block;
           height: 60px;
           padding: 0;
-          background: rgba(8, 13, 26, 0.5);
-          border: 1px solid var(--border);
+          background: transparent;
+          border: none;
           border-radius: 0.75rem;
-          box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
           position: relative;
           overflow: hidden;
           will-change: height;

@@ -193,18 +193,11 @@ export default function GlassSurface({
       <style>{`
         .glass-surface {
           position: relative;
-          display: flex;
-          align-items: center;
-          justify-content: center;
           overflow: hidden;
           transition: opacity 0.26s ease-out;
         }
         .glass-surface__content {
           width: 100%;
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
           border-radius: inherit;
           position: relative;
           z-index: 1;
@@ -217,13 +210,14 @@ export default function GlassSurface({
             0 0 10px 4px color-mix(in oklch, white, transparent 85%) inset;
         }
         .glass-surface--fallback {
-          background: rgba(8, 13, 26, 0.6);
-          backdrop-filter: blur(16px) saturate(1.4);
-          -webkit-backdrop-filter: blur(16px) saturate(1.4);
-          border: 1px solid var(--border);
+          background: rgba(255, 255, 255, 0.05);
+          -webkit-backdrop-filter: blur(16px) saturate(1.8) brightness(1.1);
+          backdrop-filter: blur(16px) saturate(1.8) brightness(1.1);
+          border: 1px solid rgba(255, 255, 255, 0.12);
           box-shadow:
-            inset 0 1px 0 0 rgba(255, 255, 255, 0.08),
-            inset 0 -1px 0 0 rgba(255, 255, 255, 0.04);
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
+            inset 0 -1px 0 0 rgba(255, 255, 255, 0.05),
+            0 8px 32px 0 rgba(0, 0, 0, 0.2);
         }
       `}</style>
 
