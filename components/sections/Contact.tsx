@@ -2,10 +2,13 @@
 
 import { motion } from "motion/react";
 import { useState } from "react";
-import { ElectricBorder } from "../effects";
-import { TextType } from "../text";
+import WordsPullUpMultiStyle from "../text/WordsPullUpMultiStyle";
+import { ArrowRight } from "../icons";
 
 type FormStatus = "idle" | "sending" | "sent" | "error";
+
+const INPUT_CLASS =
+  "w-full rounded-lg bg-[var(--navy3)] px-4 py-3 text-sm text-primary outline-none transition placeholder:text-[var(--text3)] focus:ring-2 focus:ring-[var(--accent)]/40 disabled:cursor-not-allowed disabled:opacity-50";
 
 export default function Contact() {
   const [name, setName] = useState("");
@@ -13,180 +16,97 @@ export default function Contact() {
   const [company, setCompany] = useState("");
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<FormStatus>("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const FALLBACK_ERROR = "送信に失敗しました。時間をおいて再度お試しください。";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("sending");
+    setErrorMessage(null);
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, company, message }),
       });
-      if (res.ok) setStatus("sent");
-      else setStatus("error");
+      if (res.ok) {
+        setStatus("sent");
+      } else {
+        let message = FALLBACK_ERROR;
+        try {
+          const data: { error?: string } = await res.json();
+          if (data.error) message = data.error;
+        } catch {
+          /* non-JSON error response — keep fallback */
+        }
+        setErrorMessage(message);
+        setStatus("error");
+      }
     } catch {
+      setErrorMessage(FALLBACK_ERROR);
       setStatus("error");
     }
   };
 
   return (
-    <section
-      id="contact"
-      style={{
-        background: "var(--navy)",
-        padding: "clamp(4rem, 10vw, 8rem) clamp(1rem, 5vw, 2rem)",
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      {/* Top border */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: "10%",
-          right: "10%",
-          height: "1px",
-          background:
-            "linear-gradient(to right, transparent, var(--border), transparent)",
-        }}
-      />
-
-      {/* Background glow */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "radial-gradient(ellipse 60% 40% at 50% 100%, rgba(79,142,247,0.05) 0%, transparent 70%)",
-          pointerEvents: "none",
-        }}
-      />
-
-      <div
-        style={{
-          position: "relative",
-          zIndex: 1,
-          maxWidth: "72rem",
-          margin: "0 auto",
-        }}
-      >
-        {/* Section header */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          style={{ marginBottom: "clamp(2.5rem, 6vw, 4rem)" }}
-        >
-          <span
-            style={{
-              fontFamily: "var(--font-mono), monospace",
-              fontSize: "0.75rem",
-              color: "#5bc8f5",
-              letterSpacing: "0.2em",
-              textTransform: "uppercase",
-              display: "block",
-              marginBottom: "0.75rem",
-            }}
-          >
-            Get in Touch
-          </span>
-          <h2
-            style={{
-              fontSize: "clamp(1.75rem, 5vw, 3rem)",
-              fontWeight: 700,
-              lineHeight: 1.15,
-              letterSpacing: "0.05em",
-              margin: 0,
-              color: "var(--text)",
-            }}
-          >
-            <TextType
-              text="Contact"
-              typingSpeed={80}
-              loop
-              pauseDuration={4000}
-              showCursor={false}
-              startOnVisible
-            />
-          </h2>
-          <p
-            style={{
-              marginTop: "1rem",
-              fontSize: "clamp(0.9rem, 2vw, 1.05rem)",
-              color: "var(--text2)",
-              maxWidth: "36rem",
-              lineHeight: 1.7,
-            }}
-          >
-            お問い合わせ
+    <section id="contact" className="relative bg-[var(--navy)] px-4 py-20 md:px-6 md:py-28">
+      <div className="bg-noise pointer-events-none absolute inset-0 opacity-[0.15]" />
+      <div className="relative mx-auto max-w-7xl">
+        <div className="text-center">
+          <p className="mb-8 text-[10px] uppercase tracking-[0.25em] text-primary sm:text-xs">
+            Contact
           </p>
-        </motion.div>
+          <WordsPullUpMultiStyle
+            className="text-xl font-normal sm:text-2xl md:text-3xl lg:text-4xl"
+            segments={[{ text: "まずは、無料相談から。", className: "text-primary" }]}
+          />
+          <WordsPullUpMultiStyle
+            className="mt-1 text-xl font-normal sm:text-2xl md:text-3xl lg:text-4xl"
+            segments={[{ text: "2営業日以内にご返信します。", className: "text-gray-500" }]}
+          />
+        </div>
 
-        {/* Form */}
         <motion.div
           initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
-          style={{
-            maxWidth: "40rem",
-            margin: "0 auto",
-          }}
+          transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          className="mx-auto mt-12 max-w-2xl md:mt-16"
         >
-          <ElectricBorder
-            color="#7df9ff"
-            speed={0.5}
-            chaos={0.05}
-            borderRadius={12}
-          >
           {status === "sent" ? (
-            <div className="contact-success">
-              <div style={{ marginBottom: "1rem", display: "flex", justifyContent: "center" }}>
+            <div className="rounded-2xl bg-[var(--navy2)] px-6 py-14 text-center md:rounded-[2rem] md:px-12">
+              <div className="mb-4 flex justify-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth="1.5"
-                  stroke="#5bc8f5"
+                  stroke="var(--accent)"
                   width="32"
                   height="32"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                 </svg>
               </div>
-              <p
-                style={{
-                  color: "var(--text)",
-                  fontSize: "1.05rem",
-                  fontWeight: 600,
-                  margin: "0 0 0.5rem 0",
-                }}
-              >
+              <p className="text-base font-medium text-primary">
                 お送りいただきありがとうございます。
               </p>
-              <p
-                style={{
-                  color: "var(--text2)",
-                  fontSize: "0.9rem",
-                  margin: 0,
-                  lineHeight: 1.7,
-                }}
-              >
+              <p className="mt-2 text-sm leading-relaxed text-gray-400">
                 内容を確認のうえ、2営業日以内にご連絡いたします。
               </p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="contact-form" noValidate>
+            <form
+              onSubmit={handleSubmit}
+              noValidate
+              className="flex flex-col gap-6 rounded-2xl bg-[var(--navy2)] p-7 md:rounded-[2rem] md:p-12"
+            >
               {/* Name */}
-              <div className="contact-field">
-                <label htmlFor="contact-name" className="contact-label">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="contact-name" className="flex items-center gap-1.5 text-sm text-primary/80">
                   お名前
-                  <span className="contact-required" aria-label="必須">
-                    *
-                  </span>
+                  <span aria-label="必須" style={{ color: "var(--accent)" }}>*</span>
                 </label>
                 <input
                   id="contact-name"
@@ -195,18 +115,16 @@ export default function Contact() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="山田 太郎"
-                  className="contact-input"
+                  className={INPUT_CLASS}
                   disabled={status === "sending"}
                 />
               </div>
 
               {/* Email */}
-              <div className="contact-field">
-                <label htmlFor="contact-email" className="contact-label">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="contact-email" className="flex items-center gap-1.5 text-sm text-primary/80">
                   メールアドレス
-                  <span className="contact-required" aria-label="必須">
-                    *
-                  </span>
+                  <span aria-label="必須" style={{ color: "var(--accent)" }}>*</span>
                 </label>
                 <input
                   id="contact-email"
@@ -215,16 +133,18 @@ export default function Contact() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@email.com"
-                  className="contact-input"
+                  className={INPUT_CLASS}
                   disabled={status === "sending"}
                 />
               </div>
 
               {/* Company */}
-              <div className="contact-field">
-                <label htmlFor="contact-company" className="contact-label">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="contact-company" className="flex items-center gap-2 text-sm text-primary/80">
                   会社名
-                  <span className="contact-optional">任意</span>
+                  <span className="rounded bg-white/5 px-1.5 py-0.5 text-[10px]" style={{ color: "var(--text3)" }}>
+                    任意
+                  </span>
                 </label>
                 <input
                   id="contact-company"
@@ -232,18 +152,16 @@ export default function Contact() {
                   value={company}
                   onChange={(e) => setCompany(e.target.value)}
                   placeholder="株式会社〇〇"
-                  className="contact-input"
+                  className={INPUT_CLASS}
                   disabled={status === "sending"}
                 />
               </div>
 
               {/* Message */}
-              <div className="contact-field">
-                <label htmlFor="contact-message" className="contact-label">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="contact-message" className="flex items-center gap-1.5 text-sm text-primary/80">
                   お問い合わせ内容
-                  <span className="contact-required" aria-label="必須">
-                    *
-                  </span>
+                  <span aria-label="必須" style={{ color: "var(--accent)" }}>*</span>
                 </label>
                 <textarea
                   id="contact-message"
@@ -252,170 +170,46 @@ export default function Contact() {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="ご相談内容をご記入ください"
-                  className="contact-input contact-textarea"
+                  className={`${INPUT_CLASS} min-h-28 resize-y leading-relaxed`}
                   disabled={status === "sending"}
                 />
               </div>
 
               {/* Error state */}
               {status === "error" && (
-                <p className="contact-error">
-                  送信に失敗しました。時間をおいて再度お試しください。
+                <p className="rounded-lg border border-red-400/25 bg-red-400/10 px-4 py-2.5 text-sm text-red-300">
+                  {errorMessage ?? FALLBACK_ERROR}
                 </p>
               )}
 
-              {/* Submit */}
+              {/* Submit — same pill style as the hero CTA */}
               <button
                 type="submit"
                 disabled={status === "sending" || !name.trim() || !email.trim() || !message.trim()}
-                className="contact-submit cursor-target"
+                className="group mx-auto flex items-center gap-2 rounded-full bg-primary py-1.5 pl-6 pr-1.5 text-sm font-medium text-[var(--navy)] transition-all hover:gap-3 disabled:cursor-not-allowed disabled:opacity-40 sm:text-base"
               >
                 {status === "sending" ? (
-                  <span style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-                    <span className="contact-spinner" aria-hidden="true" />
+                  <span className="flex items-center gap-2.5 py-1.5 pr-4">
+                    <span
+                      className="h-4 w-4 animate-spin rounded-full border-2 border-[rgba(8,13,26,0.25)]"
+                      style={{ borderTopColor: "var(--navy)" }}
+                      aria-hidden
+                    />
                     送信中…
                   </span>
                 ) : (
-                  "送信する"
+                  <>
+                    送信する
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--navy)] transition-transform group-hover:scale-110 sm:h-10 sm:w-10">
+                      <ArrowRight className="text-primary" size={18} />
+                    </span>
+                  </>
                 )}
               </button>
             </form>
           )}
-          </ElectricBorder>
         </motion.div>
       </div>
-
-      <style>{`
-        .contact-form {
-          background: rgba(13, 21, 38, 0.7);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          border: 1px solid rgba(125, 249, 255, 0.2);
-          border-radius: 12px;
-          padding: clamp(1.75rem, 4vw, 2.5rem);
-          display: flex;
-          flex-direction: column;
-          gap: 1.5rem;
-        }
-        .contact-success {
-          background: rgba(13, 21, 38, 0.7);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          border: 1px solid rgba(125, 249, 255, 0.2);
-          border-radius: 12px;
-          padding: clamp(2rem, 5vw, 3rem);
-          text-align: center;
-        }
-        .contact-field {
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-        }
-        .contact-label {
-          font-family: var(--font-sans), sans-serif;
-          font-size: clamp(0.85rem, 1.5vw, 1rem);
-          font-weight: 400;
-          color: var(--text);
-          letter-spacing: 0.02em;
-          text-transform: none;
-          display: flex;
-          align-items: center;
-          gap: 0.4rem;
-        }
-        .contact-required {
-          color: var(--accent);
-          font-size: 0.8rem;
-        }
-        .contact-optional {
-          font-size: 0.65rem;
-          color: var(--text3);
-          font-family: var(--font-sans), sans-serif;
-          text-transform: none;
-          letter-spacing: 0;
-          background: rgba(79, 142, 247, 0.08);
-          border: 1px solid var(--border);
-          border-radius: 4px;
-          padding: 0.1rem 0.4rem;
-        }
-        .contact-input {
-          background: var(--navy3);
-          border: 1px solid var(--border);
-          border-radius: 8px;
-          padding: 0.75rem 1rem;
-          font-family: var(--font-sans), sans-serif;
-          font-size: 0.95rem;
-          color: var(--text);
-          outline: none;
-          transition: border-color 0.2s ease, box-shadow 0.2s ease;
-          width: 100%;
-          box-sizing: border-box;
-        }
-        .contact-input::placeholder {
-          color: var(--text3);
-        }
-        .contact-input:focus {
-          border-color: var(--accent);
-          box-shadow: 0 0 0 3px rgba(79, 142, 247, 0.12);
-        }
-        .contact-input:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
-        .contact-textarea {
-          resize: vertical;
-          min-height: 7rem;
-          line-height: 1.6;
-        }
-        .contact-error {
-          font-size: 0.85rem;
-          color: #f87171;
-          margin: 0;
-          padding: 0.6rem 0.9rem;
-          background: rgba(248, 113, 113, 0.08);
-          border: 1px solid rgba(248, 113, 113, 0.25);
-          border-radius: 6px;
-        }
-        .contact-submit {
-          background: transparent;
-          border: 1px dashed rgba(232, 234, 240, 0.3);
-          border-radius: 8px;
-          color: var(--text);
-          font-family: var(--font-mono), monospace;
-          font-size: clamp(0.9rem, 2vw, 1.125rem);
-          font-weight: 600;
-          letter-spacing: 0.08em;
-          padding: 0.85rem 1.5rem;
-          min-width: 200px;
-          cursor: pointer;
-          transition: color 0.2s ease, border-color 0.2s ease;
-          align-self: center;
-        }
-        .contact-submit:hover:not(:disabled) {
-          color: #5bc8f5;
-          border-color: rgba(91, 200, 245, 0.6);
-        }
-        .contact-submit:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
-        .contact-spinner {
-          display: inline-block;
-          width: 14px;
-          height: 14px;
-          border: 2px solid rgba(79, 142, 247, 0.3);
-          border-top-color: var(--accent);
-          border-radius: 50%;
-          animation: contact-spin 0.7s linear infinite;
-        }
-        @keyframes contact-spin {
-          to { transform: rotate(360deg); }
-        }
-        @media (max-width: 768px) {
-          .contact-submit {
-            min-width: 150px;
-          }
-        }
-      `}</style>
     </section>
   );
 }

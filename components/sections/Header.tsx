@@ -1,413 +1,138 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
-import { ShinyText } from "../text";
-import { GlassSurface } from "../effects";
+import { useEffect, useState } from "react";
 
-interface NavCard {
-  label: string;
-  href: string;
-  bgColor: string;
-  textColor: string;
-  description: string;
-}
-
-const NAV_CARDS: NavCard[] = [
-  {
-    label: "Services",
-    href: "#services",
-    bgColor: "rgba(255, 255, 255, 0.06)",
-    textColor: "var(--text)",
-    description: "アプリ開発・システム構築・AI導入支援",
-  },
-  {
-    label: "Flow",
-    href: "#flow",
-    bgColor: "rgba(255, 255, 255, 0.06)",
-    textColor: "var(--text)",
-    description: "無料相談からの流れ",
-  },
-  {
-    label: "Contact",
-    href: "#contact",
-    bgColor: "rgba(255, 255, 255, 0.06)",
-    textColor: "var(--text)",
-    description: "お問い合わせ・無料相談",
-  },
+const LINKS = [
+  { label: "Services", href: "#services" },
+  { label: "Flow", href: "#flow" },
+  { label: "Contact", href: "#contact" },
 ];
 
 export default function Header() {
-  const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
-  const navRef = useRef<HTMLElement>(null);
-  const cardsRef = useRef<(HTMLAnchorElement | null)[]>([]);
-  const tlRef = useRef<gsap.core.Timeline | null>(null);
+  const [scrolled, setScrolled] = useState(false);
 
-  const calculateHeight = () => {
-    const navEl = navRef.current;
-    if (!navEl) return 260;
-
-    const isMobile = window.matchMedia("(max-width: 768px)").matches;
-    if (isMobile) {
-      const contentEl = navEl.querySelector(".card-nav-content") as HTMLElement | null;
-      if (contentEl) {
-        const wasVisibility = contentEl.style.visibility;
-        const wasPointerEvents = contentEl.style.pointerEvents;
-        const wasPosition = contentEl.style.position;
-        const wasHeight = contentEl.style.height;
-
-        contentEl.style.visibility = "visible";
-        contentEl.style.pointerEvents = "auto";
-        contentEl.style.position = "static";
-        contentEl.style.height = "auto";
-
-        void contentEl.offsetHeight;
-
-        const topBar = 60;
-        const padding = 16;
-        const contentHeight = contentEl.scrollHeight;
-
-        contentEl.style.visibility = wasVisibility;
-        contentEl.style.pointerEvents = wasPointerEvents;
-        contentEl.style.position = wasPosition;
-        contentEl.style.height = wasHeight;
-
-        return topBar + contentHeight + padding;
-      }
-    }
-    return 145;
-  };
-
-  const createTimeline = () => {
-    const navEl = navRef.current;
-    if (!navEl) return null;
-
-    const cards = cardsRef.current.filter(Boolean);
-
-    gsap.set(navEl, { height: 60, overflow: "hidden" });
-    gsap.set(cards, { y: 50, opacity: 0 });
-
-    const tl = gsap.timeline({ paused: true });
-
-    tl.to(navEl, {
-      height: calculateHeight,
-      duration: 0.4,
-      ease: "power3.out",
-    });
-
-    tl.to(cards, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out", stagger: 0.08 }, "-=0.1");
-
-    return tl;
-  };
-
-  useLayoutEffect(() => {
-    const tl = createTimeline();
-    tlRef.current = tl;
-
-    return () => {
-      tl?.kill();
-      tlRef.current = null;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useLayoutEffect(() => {
-    const handleResize = () => {
-      if (!tlRef.current) return;
-
-      if (isExpanded) {
-        const newHeight = calculateHeight();
-        gsap.set(navRef.current, { height: newHeight });
-
-        tlRef.current.kill();
-        const newTl = createTimeline();
-        if (newTl) {
-          newTl.progress(1);
-          tlRef.current = newTl;
-        }
-      } else {
-        tlRef.current.kill();
-        const newTl = createTimeline();
-        if (newTl) {
-          tlRef.current = newTl;
-        }
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isExpanded]);
-
-  const toggleMenu = () => {
-    const tl = tlRef.current;
-    if (!tl) return;
-    if (!isExpanded) {
-      setIsHamburgerOpen(true);
-      setIsExpanded(true);
-      tl.play(0);
-    } else {
-      setIsHamburgerOpen(false);
-      tl.eventCallback("onReverseComplete", () => setIsExpanded(false));
-      tl.reverse();
-    }
-  };
-
-  const handleLinkClick = () => {
-    if (isExpanded) {
-      setIsHamburgerOpen(false);
-      tlRef.current?.eventCallback("onReverseComplete", () => setIsExpanded(false));
-      tlRef.current?.reverse();
-    }
-  };
-
-  const setCardRef = (i: number) => (el: HTMLAnchorElement | null) => {
-    cardsRef.current[i] = el;
-  };
-
   return (
-    <div className="card-nav-container">
-      <GlassSurface
-        width="100%"
-        height="auto"
-        borderRadius={12}
-        brightness={30}
-        opacity={0.85}
-        blur={14}
-        backgroundOpacity={0.3}
-        saturation={1.2}
-        distortionScale={-120}
-      >
-      <nav
-        ref={navRef}
-        className={`card-nav ${isExpanded ? "open" : ""}`}
-      >
-        <div className="card-nav-top">
-          <div
-            className={`hamburger-menu ${isHamburgerOpen ? "open" : ""}`}
-            onClick={toggleMenu}
-            role="button"
-            aria-label={isExpanded ? "Close menu" : "Open menu"}
-            tabIndex={0}
-          >
-            <div className="hamburger-line" />
-            <div className="hamburger-line" />
-          </div>
-
-          <a href="#" className="logo-text" onClick={handleLinkClick}>
-            <ShinyText text="EijiCode" speed={4} className="logo-shiny" />
-          </a>
-
-        </div>
-
-        <div className="card-nav-content" aria-hidden={!isExpanded}>
-          {NAV_CARDS.map((card, idx) => (
-            <a
-              key={card.label}
-              className="nav-card cursor-target"
-              ref={setCardRef(idx)}
-              href={card.href}
-              onClick={handleLinkClick}
-              onMouseMove={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
-                e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
-              }}
-              style={{ backgroundColor: card.bgColor, color: card.textColor }}
-            >
-              <div className="nav-card-label">{card.label}</div>
-              <div className="nav-card-desc">{card.description}</div>
+    <header className={`site-nav${scrolled ? " scrolled" : ""}`}>
+      <div className="site-nav-left">
+        <a href="#top" className="site-logo">
+          eijicode
+        </a>
+        <nav className="site-links" aria-label="メインナビゲーション">
+          {LINKS.map((link) => (
+            <a key={link.label} href={link.href}>
+              {link.label}
             </a>
           ))}
-        </div>
-      </nav>
-      </GlassSurface>
+        </nav>
+      </div>
+
+      <div className="site-nav-right">
+        <a
+          href="https://x.com/ET_1202"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="X (Twitter)"
+          className="site-x"
+        >
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+          </svg>
+        </a>
+        <a href="#contact" className="site-cta">
+          無料相談 <span aria-hidden>&rarr;</span>
+        </a>
+      </div>
 
       <style>{`
-        .card-nav-container {
+        .site-nav {
           position: fixed;
-          top: 1.5rem;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 90%;
-          max-width: 800px;
-          z-index: 100;
-          box-sizing: border-box;
-        }
-        .card-nav {
-          display: block;
-          height: 60px;
-          padding: 0;
-          background: transparent;
-          border: none;
-          border-radius: 0.75rem;
-          position: relative;
-          overflow: hidden;
-          will-change: height;
-        }
-        .card-nav-top {
-          position: absolute;
           top: 0;
           left: 0;
           right: 0;
-          height: 60px;
+          z-index: 100;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 0.5rem 0.5rem 0.5rem 1.1rem;
-          z-index: 2;
+          padding: 1.1rem clamp(1.25rem, 4vw, 2.5rem);
+          border-bottom: 1px solid transparent;
+          transition: background 0.35s ease, border-color 0.35s ease, backdrop-filter 0.35s ease;
         }
-        .hamburger-menu {
-          height: 100%;
+        .site-nav.scrolled {
+          background: rgba(8, 13, 26, 0.72);
+          backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
+          border-bottom-color: var(--border);
+        }
+        .site-nav-left {
           display: flex;
-          flex-direction: column;
           align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          gap: 6px;
+          gap: 2.25rem;
+        }
+        .site-logo {
+          font-family: var(--font-mono), monospace;
+          font-size: 1.15rem;
+          font-weight: 700;
+          letter-spacing: -0.01em;
+          color: var(--text);
+          text-decoration: none;
+        }
+        .site-links {
+          display: flex;
+          align-items: center;
+          gap: 1.75rem;
+        }
+        .site-links a {
+          font-size: 0.875rem;
+          color: var(--text2);
+          text-decoration: none;
+          transition: color 0.2s ease;
+        }
+        .site-links a:hover {
           color: var(--text);
         }
-        .hamburger-menu:hover .hamburger-line {
-          opacity: 0.75;
-        }
-        .hamburger-line {
-          width: 24px;
-          height: 2px;
-          background-color: currentColor;
-          transition: transform 0.25s ease, opacity 0.2s ease;
-          transform-origin: 50% 50%;
-        }
-        .hamburger-menu.open .hamburger-line:first-child {
-          transform: translateY(4px) rotate(45deg);
-        }
-        .hamburger-menu.open .hamburger-line:last-child {
-          transform: translateY(-4px) rotate(-45deg);
-        }
-        .logo-text {
-          position: absolute;
-          left: 50%;
-          top: 50%;
-          transform: translate(-50%, -50%);
-          text-decoration: none;
-        }
-        .logo-shiny {
-          font-family: var(--font-mono), monospace;
-          font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-          font-weight: 700;
-          letter-spacing: 0.03em;
-        }
-        .card-nav-content {
-          position: absolute;
-          left: 0;
-          right: 0;
-          top: 60px;
-          bottom: 0;
-          padding: 0 0.5rem 0.5rem;
+        .site-nav-right {
           display: flex;
-          align-items: flex-end;
-          gap: 10px;
-          visibility: hidden;
-          pointer-events: none;
-          z-index: 1;
+          align-items: center;
+          gap: 1.1rem;
         }
-        .card-nav.open .card-nav-content {
-          visibility: visible;
-          pointer-events: auto;
-        }
-        .nav-card {
-          height: 100%;
-          flex: 1 1 0;
-          min-width: 0;
-          border-radius: calc(0.75rem - 0.2rem);
-          position: relative;
+        .site-x {
           display: flex;
-          flex-direction: column;
-          padding: 8px 12px;
-          gap: 4px;
-          user-select: none;
-          border: 1px solid var(--border);
-          text-decoration: none;
-          cursor: pointer;
-          transition: border-color 0.2s, box-shadow 0.2s;
-          overflow: hidden;
-          --mouse-x: 50%;
-          --mouse-y: 50%;
+          color: var(--text2);
+          transition: color 0.2s ease;
         }
-        .nav-card::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: radial-gradient(
-            circle at var(--mouse-x) var(--mouse-y),
-            rgba(91, 200, 245, 0.15),
-            transparent 80%
-          );
-          opacity: 0;
-          transition: opacity 0.4s ease;
-          pointer-events: none;
+        .site-x:hover {
+          color: var(--text);
         }
-        .nav-card:hover::before {
-          opacity: 1;
-        }
-        .nav-card:hover {
-          border-color: rgba(91, 200, 245, 0.4);
-          box-shadow: 0 0 16px rgba(91, 200, 245, 0.1);
-        }
-        .nav-card-label {
-          font-family: var(--font-mono), monospace;
+        .site-cta {
+          font-size: 0.82rem;
           font-weight: 600;
-          font-size: 1rem;
-          letter-spacing: 0.02em;
+          color: var(--text);
+          text-decoration: none;
+          border: 1px solid var(--border);
+          border-radius: 8px;
+          padding: 0.5rem 1rem;
+          transition: border-color 0.2s ease, background 0.2s ease;
         }
-        .nav-card-desc {
-          font-family: var(--font-sans), sans-serif;
-          font-size: 0.75rem;
-          opacity: 0.7;
-          line-height: 1.4;
-          margin-top: auto;
+        .site-cta:hover {
+          border-color: rgba(79, 142, 247, 0.55);
+          background: rgba(79, 142, 247, 0.1);
         }
         @media (max-width: 768px) {
-          .card-nav-container {
-            width: 92%;
-            top: 1rem;
+          .site-nav {
+            padding: 0.9rem 1.25rem;
           }
-          .card-nav-top {
-            padding: 0.5rem 1rem;
-          }
-          .hamburger-menu {
-            order: 2;
-          }
-          .logo-text {
-            position: static;
-            transform: none;
-            order: 1;
-          }
-          .card-nav-cta {
+          .site-links {
             display: none;
-          }
-          .card-nav-content {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 8px;
-            padding: 0.5rem;
-            justify-content: flex-start;
-          }
-          .nav-card {
-            height: auto;
-            min-height: 50px;
-            flex: 1 1 auto;
-            background: rgba(13, 21, 38, 0.9) !important;
-            backdrop-filter: blur(8px);
-          }
-          .nav-card-label {
-            font-size: 0.9rem;
-          }
-          .nav-card-desc {
-            font-size: 0.7rem;
           }
         }
       `}</style>
-    </div>
+    </header>
   );
 }

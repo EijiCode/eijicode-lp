@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@theme {
+  --color-primary: #e8eaf0;
+  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+}
+
 /* ===== Design Tokens ===== */
 :root {
   --navy: #080d1a;
@@ -21,7 +26,7 @@ html {
 body {
   background-color: var(--navy);
   color: var(--text);
-  font-family: var(--font-sans), sans-serif;
+  font-family: "Almarai", var(--font-sans), sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -35,4 +40,12 @@ body {
 /* ===== Utility Classes ===== */
 .font-mono {
   font-family: var(--font-mono), monospace;
+}
+
+/* SVG noise textures */
+.noise-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+.bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
 }

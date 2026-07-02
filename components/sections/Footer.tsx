@@ -2,65 +2,20 @@
 
 export default function Footer() {
   return (
-    <footer
-      style={{
-        background: "var(--navy)",
-        padding: "3rem 1.5rem 2rem",
-        position: "relative",
-      }}
-    >
-      {/* Top border */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: "10%",
-          right: "10%",
-          height: "1px",
-          background:
-            "linear-gradient(to right, transparent, var(--border), transparent)",
-        }}
-      />
+    <footer className="bg-[var(--navy)] px-4 pb-8 pt-10 md:px-6">
+      <div className="mx-auto flex max-w-7xl flex-col items-center gap-5">
+        <span className="text-xl tracking-[-0.02em] text-primary">EijiCode</span>
 
-      <div
-        style={{
-          maxWidth: "72rem",
-          margin: "0 auto",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "1.25rem",
-        }}
-      >
-        {/* Logo */}
-        <span
-          style={{
-            fontFamily: "var(--font-mono), monospace",
-            fontSize: "1.1rem",
-            fontWeight: 700,
-            color: "var(--text)",
-            letterSpacing: "0.03em",
-          }}
-        >
-          EijiCode
-        </span>
-
-        {/* X link */}
         <a
           href="https://x.com/ET_1202"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="X (Twitter)"
-          style={{
-            color: "var(--text3)",
-            transition: "color 0.2s",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#5bc8f5")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text3)")}
+          className="text-gray-500 transition-colors hover:text-primary"
         >
           <svg
-            width="20"
-            height="20"
+            width="18"
+            height="18"
             viewBox="0 0 24 24"
             fill="currentColor"
             xmlns="http://www.w3.org/2000/svg"
@@ -69,16 +24,7 @@ export default function Footer() {
           </svg>
         </a>
 
-        {/* Copyright */}
-        <p
-          style={{
-            fontFamily: "var(--font-mono), monospace",
-            fontSize: "0.7rem",
-            color: "var(--text3)",
-            margin: 0,
-            letterSpacing: "0.05em",
-          }}
-        >
+        <p className="text-[11px] tracking-wide text-gray-500">
           © 2026 EijiCode. All rights reserved.
         </p>
       </div>
