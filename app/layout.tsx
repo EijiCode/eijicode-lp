@@ -17,7 +17,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "EijiCode | 岐阜のシステム開発",
+  title: "EijiCode",
   description:
     "岐阜発のWeb制作・Webアプリ開発・スマホアプリ開発・AI活用支援。設計から運用まで、ひとりの開発者が一貫して伴走します。",
 };
@@ -28,10 +28,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" className={`${notoSansJP.variable} ${ibmPlexMono.variable}`} suppressHydrationWarning>
+    <html
+      lang="ja"
+      className={`${notoSansJP.variable} ${ibmPlexMono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
         {/* Almarai has no JP glyphs — body falls back to Noto Sans JP for Japanese */}
         <link
           href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Instrument+Serif:ital@1&display=swap"

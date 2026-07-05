@@ -9,9 +9,15 @@ interface WordsPullUpProps {
   text: string;
   className?: string;
   showAsterisk?: boolean;
+  shiny?: boolean;
 }
 
-export default function WordsPullUp({ text, className = "", showAsterisk = false }: WordsPullUpProps) {
+export default function WordsPullUp({
+  text,
+  className = "",
+  showAsterisk = false,
+  shiny = false,
+}: WordsPullUpProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true });
   const words = text.split(" ");
@@ -21,7 +27,7 @@ export default function WordsPullUp({ text, className = "", showAsterisk = false
       {words.map((word, i) => (
         <motion.span
           key={`${word}-${i}`}
-          className="relative inline-block"
+          className={`relative inline-block${shiny ? " shiny-text" : ""}`}
           initial={{ y: 20, opacity: 0 }}
           animate={isInView ? { y: 0, opacity: 1 } : {}}
           transition={{ delay: i * 0.08, duration: 0.6, ease: EASE }}

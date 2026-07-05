@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import WordsPullUp from "../text/WordsPullUp";
+import Noise from "../effects/Noise";
 import { ArrowRight } from "../icons";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -51,8 +52,11 @@ export default function Hero() {
         {/* Cool grade toward the navy palette */}
         <div className="pointer-events-none absolute inset-0 bg-[#0a1428]/30 mix-blend-multiply" />
 
-        {/* Noise + gradient overlays */}
-        <div className="noise-overlay pointer-events-none absolute inset-0 opacity-[0.7] mix-blend-overlay" />
+        {/* 動くグレイン + gradient overlays（静的な .noise-overlay から差し替え） */}
+        <Noise
+          className="opacity-[0.7] mix-blend-overlay"
+          patternAlpha={255}
+        />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60" />
 
         {/* Bottom-aligned content */}
@@ -61,7 +65,8 @@ export default function Hero() {
           <div className="col-span-12 pb-[4vw] lg:col-span-8 lg:pb-0">
             <WordsPullUp
               text="EijiCode"
-              className="text-[26vw] sm:text-[24vw] md:text-[22vw] lg:text-[20vw] xl:text-[19vw] 2xl:text-[20vw] font-normal leading-[0.85] tracking-[-0.07em] text-primary"
+              shiny
+              className="text-[26vw] sm:text-[24vw] md:text-[22vw] lg:text-[18vw] xl:text-[17vw] 2xl:text-[18vw] font-normal leading-[0.85] tracking-[-0.07em] text-primary"
             />
           </div>
 

@@ -45,12 +45,7 @@ const SERVICE_CARDS: ServiceCard[] = [
   {
     number: "04",
     title: "AI活用支援",
-    items: [
-      "チャットボット・社内FAQ",
-      "業務フローの自動化",
-      "AI導入支援",
-      "AI活用コンサルティング",
-    ],
+    items: ["業務フローの自動化", "AI導入支援"],
   },
 ];
 
@@ -72,7 +67,10 @@ function FeatureCard({ card, index }: { card: ServiceCard; index: number }) {
       <h3 className="mt-4 text-lg text-primary sm:text-xl">{card.title}</h3>
       <ul className="mt-5 flex flex-col gap-3">
         {card.items.map((item) => (
-          <li key={item} className="flex items-start gap-2.5 text-sm text-gray-400">
+          <li
+            key={item}
+            className="flex items-start gap-2.5 text-sm text-gray-400"
+          >
             <Check className="mt-0.5 shrink-0" size={15} />
             {item}
           </li>
@@ -84,7 +82,10 @@ function FeatureCard({ card, index }: { card: ServiceCard; index: number }) {
 
 export default function Services() {
   return (
-    <section id="services" className="relative bg-[var(--navy)] px-4 py-20 md:px-6 md:py-28">
+    <section
+      id="services"
+      className="relative bg-[var(--navy)] px-4 py-20 md:px-6 md:py-28"
+    >
       <div className="bg-noise pointer-events-none absolute inset-0 opacity-[0.15]" />
 
       <div className="relative mx-auto max-w-7xl">
