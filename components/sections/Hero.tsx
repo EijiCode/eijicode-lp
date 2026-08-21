@@ -78,7 +78,7 @@ export default function Hero() {
               className="text-primary/70 text-xs sm:text-sm md:text-base"
               style={{ lineHeight: 1.6 }}
             >
-              Web制作・Webアプリ・スマホアプリ・AI活用支援を、ひとりのエンジニアが設計から運用まで担当します。
+              Web制作・Webアプリ・スマホアプリ・AIによる業務効率化を、ひとりのエンジニアが設計から運用まで担当します。
             </motion.p>
 
             <motion.a

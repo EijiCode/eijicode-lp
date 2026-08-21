@@ -45,7 +45,7 @@ const SERVICE_CARDS: ServiceCard[] = [
   {
     number: "04",
     title: "AI活用支援",
-    items: ["業務フローの自動化", "AI導入支援"],
+    items: ["業務フローの自動化", "AI導入支援", "導入後の定着まで伴走"],
   },
 ];
 

@@ -4,7 +4,7 @@ import WordsPullUpMultiStyle from "../text/WordsPullUpMultiStyle";
 import AnimatedLetters from "../text/AnimatedLetters";
 
 const BIO_TEXT =
-  "Web制作、業務システム、スマホアプリ、AI活用まで。企画・設計から実装、公開後の運用改善までをひとりで完結できるのが強みです。小回りの利く体制だからこそ、意思決定の速い開発で、成果まで最短距離で進みます。";
+  "Web制作、Webアプリ、スマホアプリの開発から、AIを使った業務効率化の伴走支援まで。企画・設計から実装、公開後の運用改善までをひとりで完結できるのが強みです。小回りの利く体制だからこそ、意思決定の速い開発で、成果まで最短距離で進みます。";
 
 export default function About() {
   return (
