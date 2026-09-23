@@ -3,7 +3,7 @@
 import { motion } from "motion/react";
 import WordsPullUp from "../text/WordsPullUp";
 import Noise from "../effects/Noise";
-import { ArrowRight } from "../icons";
+import ArrowFillButton from "../effects/ArrowFillButton";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -81,18 +81,13 @@ export default function Hero() {
               Web制作・Webアプリ・スマホアプリ・AIによる業務効率化を、ひとりのエンジニアが設計から運用まで担当します。
             </motion.p>
 
-            <motion.a
-              href="#contact"
+            <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.7, duration: 0.8, ease: EASE }}
-              className="group flex items-center gap-2 rounded-full bg-primary py-1.5 pl-5 pr-1.5 text-sm font-medium text-[var(--navy)] transition-all hover:gap-3 sm:text-base"
             >
-              無料相談する
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--navy)] transition-transform group-hover:scale-110 sm:h-10 sm:w-10">
-                <ArrowRight className="text-primary" size={18} />
-              </span>
-            </motion.a>
+              <ArrowFillButton href="#contact">無料相談する</ArrowFillButton>
+            </motion.div>
           </div>
         </div>
       </div>

@@ -3,7 +3,7 @@
 import { motion } from "motion/react";
 import { useState } from "react";
 import WordsPullUpMultiStyle from "../text/WordsPullUpMultiStyle";
-import { ArrowRight } from "../icons";
+import ArrowFillButton from "../effects/ArrowFillButton";
 
 type FormStatus = "idle" | "sending" | "sent" | "error";
 
@@ -183,29 +183,14 @@ export default function Contact() {
               )}
 
               {/* Submit — same pill style as the hero CTA */}
-              <button
+              <ArrowFillButton
                 type="submit"
+                className="mx-auto"
+                loading={status === "sending"}
                 disabled={status === "sending" || !name.trim() || !email.trim() || !message.trim()}
-                className="group mx-auto flex items-center gap-2 rounded-full bg-primary py-1.5 pl-6 pr-1.5 text-sm font-medium text-[var(--navy)] transition-all hover:gap-3 disabled:cursor-not-allowed disabled:opacity-40 sm:text-base"
               >
-                {status === "sending" ? (
-                  <span className="flex items-center gap-2.5 py-1.5 pr-4">
-                    <span
-                      className="h-4 w-4 animate-spin rounded-full border-2 border-[rgba(8,13,26,0.25)]"
-                      style={{ borderTopColor: "var(--navy)" }}
-                      aria-hidden
-                    />
-                    送信中…
-                  </span>
-                ) : (
-                  <>
-                    送信する
-                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--navy)] transition-transform group-hover:scale-110 sm:h-10 sm:w-10">
-                      <ArrowRight className="text-primary" size={18} />
-                    </span>
-                  </>
-                )}
-              </button>
+                {status === "sending" ? "送信中…" : "送信する"}
+              </ArrowFillButton>
             </form>
           )}
         </motion.div>
